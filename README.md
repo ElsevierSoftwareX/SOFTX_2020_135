@@ -21,10 +21,6 @@ equations can be solved explicitly, implicitly or semi-implicitly.
 equations](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/equations)
 
 
-## Table of Contents ##
-
-[[_TOC_]]
-
 ## Installation ##
 
 Guide to installing SHEMAT-Suite:
