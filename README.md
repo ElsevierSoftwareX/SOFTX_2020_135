@@ -118,10 +118,10 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
    flow in porous media, International Journal of Computational
    Science and Engineering, 9(5/6), 499 (2014).
    http://dx.doi.org/10.1504/ijcse.2014.064535
-8. Rostami, M. A., & H. M. B\"ucker, Preservation of non-uniform
-   memory architecture characteristics when going from a nested OpenMP
-   to a hybrid MPI/OpenMP approach, In M. S. Obaidat, J. Kacprzyk, &
-   T. {\"O}ren, SIMULTECH 2014, Proceedings of the 4th International
+8. Rostami, M. A., & H. M. Bücker, Preservation of non-uniform memory
+   architecture characteristics when going from a nested OpenMP to a
+   hybrid MPI/OpenMP approach, In M. S. Obaidat, J. Kacprzyk, &
+   T. Ören, SIMULTECH 2014, Proceedings of the 4th International
    Conference on Simulation and Modeling Methodologies, Technologies
    and Applications, Vienna, Austria, August~28--30, 2014
    (pp. 286–291) (2014). : SciTePress.
