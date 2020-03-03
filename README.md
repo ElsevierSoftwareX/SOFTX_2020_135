@@ -45,17 +45,12 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
 
 [Equations and Discretization](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/equations)
 
-## Howtos ##
-[howtos](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/howtos)
+## SHEMAT-Suite Wiki topics ##
 
-## Property Modules ##
-[props](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/props)
-
-## User Directories ##
-[user](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/user)
-
-## Branches ##
-[branches](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/branches)
+* Howtos: [howtos](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/howtos)
+* Property Modules: [props](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/props)
+* User Directories: [user](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/user)
+* Branches: [branches](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/branches)
 
 <!-- ![shemat_suite_branches](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/1d66b69ef413debec99f1d86e7aa09a2/shemat_suite_branches.png) -->
 <img src="https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/1d66b69ef413debec99f1d86e7aa09a2/shemat_suite_branches.png"  width="500">
