@@ -37,7 +37,7 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
 
 [Doxygen documentation](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/howtos/doxygen).
 
-## Most visited pages ##
+## Most visited Wiki-pages ##
 
 [Input File](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/tutorial/input_file)
 
