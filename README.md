@@ -65,6 +65,8 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
 <!-- ![shemat_suite_forward](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/6c0aef0549d4ffbd608dd7a077507c17/shemat_suite_forward.png) -->
 <img src="https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/6c0aef0549d4ffbd608dd7a077507c17/shemat_suite_forward.png"  width="500">
 
+## Important code developments of SHEMAT-Suite ##
+
   **Table:** Important code developments of
   SHEMAT-Suite.
   * ($`^{\mathrm{x}}`$) Functionalities not available in
