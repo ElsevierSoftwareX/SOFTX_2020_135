@@ -59,7 +59,7 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
 
 <!-- ![shemat_suite_branches](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/1d66b69ef413debec99f1d86e7aa09a2/shemat_suite_branches.png) -->
 
-<img src="https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/1d66b69ef413debec99f1d86e7aa09a2/shemat_suite_branches.png"  width="300">
+<img src="https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/1d66b69ef413debec99f1d86e7aa09a2/shemat_suite_branches.png"  width="500">
 <!-- <img src="https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/1d66b69ef413debec99f1d86e7aa09a2/shemat_suite_branches.png"  width="120" height="120"> -->
 
 ## Outline of the directories in branch master ##
