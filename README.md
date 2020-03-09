@@ -81,6 +81,7 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
 | Data assimilation based on the ensemble Kalman Filter                                                            | Vogt et al., 2012                               |
 | Multi-phase flow module using automatic differentiation ($`^{\mathrm{x}}`$)                                      | Büsing et al., 2014                             |
 | Distributed-memory parallelization ($`^{\mathrm{x}}`$)                                                           | Rostami and Bücker, 2014                        |
+| Heat transfer model for plane thermo-active geotechnical systems($`^{\mathrm{x}}`$)                              | Kürten et al., 2014                             |
 | Anisotropic flow module using the full permeability tensor ($`^{\mathrm{x}}`$)                                   | Chen et al., 2016                               |
 | Supercritical water/steam module using automatic differentiation ($`^{\mathrm{x}}`$)                             | Büsing et al., 2017                             |
 | Optimal borehole positioning with respect to reservoir characterization via optimal experimental design (\*\*)   | Seidler et al., 2016                            |
@@ -125,19 +126,24 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
    Conference on Simulation and Modeling Methodologies, Technologies
    and Applications, Vienna, Austria, August~28--30, 2014
    (pp. 286–291) (2014). : SciTePress.
-9. Chen, T., Clauser, C., Marquart, G., Willbrand, K., & Büsing, H.,
-   Modeling anisotropic flow and heat transport by using mimetic
-   finite differences, Advances in Water Resources, 94(), 441–456
-   (2016).  http://dx.doi.org/10.1016/j.advwatres.2016.06.006
-10. Büsing, H., Vogt, C., Ebigbo, A., & Klitzsch, N., Numerical study
+9. Kürten, S., Mottaghy, D., & Ziegler, M., A new model for the
+   description of the heat transfer for plane thermo-active
+   geotechnical systems based on thermal resistances, Acta
+   Geotechnica, 10(2), 219–229 (2014).
+   http://dx.doi.org/10.1007/s11440-014-0311-6
+10. Chen, T., Clauser, C., Marquart, G., Willbrand, K., & Büsing, H.,
+	Modeling anisotropic flow and heat transport by using mimetic
+	finite differences, Advances in Water Resources, 94(), 441–456
+	(2016).  http://dx.doi.org/10.1016/j.advwatres.2016.06.006
+11. Büsing, H., Vogt, C., Ebigbo, A., & Klitzsch, N., Numerical study
     on co2leakage detection using electrical streaming potential data,
     Water Resources Research, 53(1), 455–469 (2017).
     http://dx.doi.org/10.1002/2016wr019803
-11. Seidler, R., Padalkina, K., Bücker, H. M., Ebigbo, A., Herty, M.,
+12. Seidler, R., Padalkina, K., Bücker, H. M., Ebigbo, A., Herty, M.,
     Marquart, G., & Niederau, J., Optimal experimental design for
     reservoir property estimates in geothermal exploration,
     Computational Geosciences, 20(2), 375–383 (2016).
     http://dx.doi.org/10.1007/s10596-016-9565-4
-12. H. Büsing, Efficient solution techniques for two-phase flow in
+13. H. Büsing, Efficient solution techniques for two-phase flow in
     heterogeneous porous media using exact Jacobians, Computational
     Geosciences, In Review (2020).
