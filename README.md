@@ -85,6 +85,7 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
 | Anisotropic flow module using the full permeability tensor ($`^{\mathrm{x}}`$)                                   | Chen et al., 2016                               |
 | Supercritical water/steam module using automatic differentiation ($`^{\mathrm{x}}`$)                             | Büsing et al., 2017                             |
 | Optimal borehole positioning with respect to reservoir characterization via optimal experimental design (\*\*)   | Seidler et al., 2016                            |
+| Halite precipitation model in porous sedimentary rock adjacent to salt diapirs($`^{\mathrm{x}}`$)                | Li et al., 2017                                 |
 | Efficient two-phase flow in heterogeneous porous media using exact Jacobians ($`^{\mathrm{x}}`$)                 | Büsing, 2020                                    |
 
 1. Rath, V., Wolf, A., & Bücker, H. M., Joint three-dimensional
@@ -144,6 +145,10 @@ the [SHEMAT-Suite Tutorial](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite
     reservoir property estimates in geothermal exploration,
     Computational Geosciences, 20(2), 375–383 (2016).
     http://dx.doi.org/10.1007/s10596-016-9565-4
-13. H. Büsing, Efficient solution techniques for two-phase flow in
+13. Li, S., Reuning, L., Marquart, G., Wang, Y., & Zhao, P., Numerical
+    model of halite precipitation in porous sedimentary rocks adjacent
+    to salt diapirs, Journal of Geophysics and Engineering, 14(5),
+    1160–1166 (2017).  http://dx.doi.org/10.1088/1742-2140/aa73f9
+14. H. Büsing, Efficient solution techniques for two-phase flow in
     heterogeneous porous media using exact Jacobians, Computational
     Geosciences, In Review (2020).
