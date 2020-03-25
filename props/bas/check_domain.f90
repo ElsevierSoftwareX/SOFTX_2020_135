@@ -29,11 +29,11 @@
 !>    For concentration, an error is thrown and the execution is
 !>    stopped if the concentration is outside the physical values.
       subroutine check_domain(ismpl)
-        use arrays, only: pres, temp, conc
-        use mod_genrl, only: i0, j0, k0
-        use mod_genrlc, only: def_props
-        use mod_conc, only: ntrac
-        use mod_linfos, only: linfos
+        use arrays
+        use mod_genrl
+        use mod_genrlc
+        use mod_conc
+        use mod_linfos
 
         implicit none
 

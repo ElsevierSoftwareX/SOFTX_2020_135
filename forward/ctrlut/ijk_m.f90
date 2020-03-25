@@ -66,7 +66,7 @@
 !>    y-lines . \n\n
       subroutine ijk_m(m,i,j,k)
 
-        use mod_genrl, only: i0, j0, k0
+        use mod_genrl
 
         implicit none
 

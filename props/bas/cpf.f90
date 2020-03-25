@@ -55,8 +55,8 @@
 !> pressures      0.001 - 110 MPa,\n
 !> temperature   15 - 350 degC\n
       double precision function cpf(i,j,k,ismpl)
-        use arrays, only: pres, temp
-        use mod_flow, only: pa_conv1
+        use arrays
+        use mod_flow
 
         implicit none
 

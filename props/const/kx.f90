@@ -33,7 +33,7 @@
 !> The permeability in x-direction is the product of the permeability
 !> in z-direction and the anisotropy factor for the x-direction.
       double precision function kx(i,j,k,ismpl)
-        use arrays, only: propunit, uindex, idx_kz, idx_an_kx
+        use arrays
 
         implicit none
 

@@ -30,7 +30,7 @@
 !> lamf returns the thermal conductivity of the fluid [W/(m*K)] at
 !> node(i,j,k) from the input file.\n
       double precision function lamf(i,j,k,ismpl)
-        use mod_const, only: fprops, pconst_lamf
+        use mod_const
 
         implicit none
 

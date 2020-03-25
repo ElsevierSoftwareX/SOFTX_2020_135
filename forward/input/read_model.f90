@@ -139,6 +139,8 @@
 
         ! Default time unit [s]
         tunit = tunit_const
+        lread_joutt = .FALSE.
+        lwrite_joutt = .FALSE.
 
         linfos(1) = 2
         linfos(2) = 1
@@ -163,6 +165,9 @@
           WRITE(*,'(1A,1I6)') '  [R] : samples =',nsmpl
         END IF
         sm_max = nsmpl
+
+!       default, disable time dependent output events
+        write_eoutt = .FALSE.
 
         IF (found(79,key_char//' PROPS',line,.FALSE.)) THEN
           CALL get_arg('PROPS',line,i,j)
@@ -197,12 +202,17 @@
 !     test for command line option given OpenMP parallelisation
         omp_outer = 0
         omp_inner = 0
+        IF (fl_omp_set) then
+           if (fl_omp_outer>0) omp_outer = fl_omp_outer
+           if (fl_omp_inner>0) omp_inner = fl_omp_inner
+        else
         IF (test_option('-tsample')) THEN
           omp_outer = get_ioptval('-tsample')
         END IF
         IF (test_option('-tsolve')) THEN
           omp_inner = get_ioptval('-tsolve')
         END IF
+        end if
         IF (omp_outer>0 .AND. omp_inner>0) WRITE(*,'(2(1A,1I3),1A)') &
           '  [R] : command line OpenMP thread configuration (', &
           max(omp_outer,1), 'x', max(omp_inner,1), ' threads)'
@@ -212,9 +222,20 @@
         IF (omp_outer>0 .AND. omp_inner==0) WRITE(*,'(1A,1I3,1A)') &
           '  [R] : command line OpenMP thread configuration (', &
           max(omp_outer,1), 'x  ? threads)'
+!       try to enable nested, when not from outside
+!$      CALL omp_set_nested(.true.)
 
 !       test for default environment given OpenMP parallelisation
-        IF (omp_inner>0) THEN
+        IF (omp_outer>0 .AND. nested_build) THEN
+!$OMP     parallel default(none) shared(Tlevel_0, omp_outer)&
+!$OMP       num_threads(omp_outer)
+!$OMP       master
+!             test thread configuartion for thread-level 0
+!             (max number of sample threads)
+              tlevel_0 = omp_get_num_of_threads()
+!$OMP       end master
+!$OMP     end parallel
+        ELSE IF (omp_inner>0 .AND. .NOT. nested_build) THEN
 !$OMP     parallel default(none) shared(Tlevel_0, omp_inner)&
 !$OMP       num_threads(omp_inner)
 !$OMP       master
@@ -233,17 +254,47 @@
 !$OMP     end parallel
         END IF
 !$OMP   parallel default(none) num_threads(Tlevel_0)&
-!$OMP     shared(Tlevel_0,Tlevel_1,omp_inner)
-        IF (omp_get_his_thread_num()==0) THEN
-          tlevel_1 = tlevel_0
-          tlevel_0 = 1
-        END IF
+!$OMP     shared(Tlevel_0,Tlevel_1,omp_inner,nested_build)
+          IF (omp_get_his_thread_num()==0) THEN
+            IF (nested_build) THEN
+              IF (omp_inner>0) THEN
+!$OMP           parallel default(none) shared(Tlevel_1, omp_inner)&
+!$OMP             num_threads(omp_inner)
+!$OMP             master
+!                   test thread configuartion for thread-level 1
+!                   (max number of solver threads)
+                    tlevel_1 = omp_get_num_of_threads()
+!$OMP             end master
+!$OMP           end parallel
+              ELSE
+!$OMP           parallel default(none) shared(Tlevel_1)
+!$OMP              master
+!                    get the number threads for thread-level 1
+!                    (max number of solver threads)
+                     tlevel_1 = omp_get_num_of_threads()
+!$OMP              end master
+!$OMP           end parallel
+              END IF
+            ELSE
+              tlevel_1 = tlevel_0
+              tlevel_0 = 1
+            END IF
+          END IF
 !$OMP   end parallel
 
 !       use "sm_max" instead of "nsmpl", because of the ENKF case nsmpl = sm_max+1
-        IF (omp_outer>1) WRITE(*,'(2A)') &
+        IF (tlevel_0>sm_max .AND. nested_build) THEN
+          tlevel_0 = sm_max
+          WRITE(*,'(1A,1I4,1A)') &
+            '  [I] : OpenMP parallelisation limited by samples=', &
+            sm_max, ' !'
+        END IF
+        IF (omp_outer>1 .AND. .NOT. nested_build) WRITE(*,'(2A)') &
           '  [I] : OpenMP parallelisation limited, ', &
           'target build not support nesting !'
+        IF (tlevel_1==1 .AND. omp_inner>1 .AND. nested_build) &
+          WRITE(*,'(2A)') '  [I] : OpenMP parallelisation limited, ', &
+          'OpenMP nesting disabled (environment) !'
 #ifdef PROPS_IAPWS
         WRITE(*,'(2A)') '  [I] : OpenMP parallelisation limited, ', &
           'IAPWS target specific behaviour.'
@@ -261,6 +312,20 @@
           CALL load_binding(line)
         ELSE
           CALL load_binding('default')
+        END IF
+
+        IF (nested_build) THEN
+!$OMP   parallel default(none) num_threads(Tlevel_0)&
+!$OMP  shared(Tlevel_0, Tlevel_1) private(i)
+          i = omp_get_his_thread_num() +1
+!$OMP     parallel default(none) num_threads(Tlevel_1)&
+!$OMP    shared(Tlevel_0, Tlevel_1, i)
+!$          call omp_binding(i)
+!           try binding, may improve the memory allocation
+!$OMP       barrier
+!$OMP     end parallel
+!$OMP     barrier
+!$OMP   end parallel
         END IF
 
 #ifndef noHDF

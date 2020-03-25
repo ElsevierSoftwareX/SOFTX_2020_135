@@ -31,7 +31,7 @@
 !> matrix-porosity [J/(K*m3)].\n
       double precision function rhoceff(i,j,k,ismpl)
 
-        use arrays, only: temp
+        use arrays
         ! use mod_temp
 
         implicit none

@@ -34,8 +34,8 @@
 !> porosity                            porlocal [-]\n
 !> temperature                         tlocal in [degC]\n
       double precision function lx(i,j,k,ismpl)
-        use arrays, only: temp, uindex, propunit, idx_por, idx_lz, idx_an_lx
-        use mod_temp, only: tref
+        use arrays
+        use mod_temp
 
         implicit none
 

@@ -143,6 +143,6 @@ add_custom_target(tap_adm
 
 add_custom_target(tap_adm_clean
    COMMAND
-    rm -fr ${CMAKE_CURRENT_SOURCE_DIR}/props/*/ad_tap/${phys_base}\${CMAKE_CURRENT_SOURCE_DIR}/user/*/ad_tap/${phys_base} ${CMAKE_CURRENT_SOURCE_DIR}/ad_tap/${phys_base}
+    rm -fr ${CMAKE_CURRENT_SOURCE_DIR}/props/*/ad_tap/${phys_base} ${CMAKE_CURRENT_SOURCE_DIR}/user/*/ad_tap/${phys_base} ${CMAKE_CURRENT_SOURCE_DIR}/ad_tap/${phys_base}
     COMMENT "Cleaning Tapenade TLM directories"
     )

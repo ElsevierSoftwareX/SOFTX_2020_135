@@ -29,7 +29,7 @@
 !> @details
 !> por returns the porosity [-] at node(i,j,k) from the input file.\n
       double precision function por(i,j,k,ismpl)
-        use arrays, only: propunit, uindex, idx_por
+        use arrays
 
         implicit none
 

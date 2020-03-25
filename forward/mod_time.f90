@@ -53,6 +53,8 @@ module mod_time
       !> `.false.`: steady state computation.
       logical transient
 
+      logical lread_joutt, lwrite_joutt
+
       !> @brief Maximum number of time periods.
       !> @details
       !> Maximum number of time periods. \n

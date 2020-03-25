@@ -33,8 +33,8 @@
 !> cma1, cma2, cma3 can be set. \n
 !> Default: cma1 = 1.0d0, cma2 = cma3 = 0.0d0
       double precision function rhocm(i,j,k,ismpl)
-        use arrays, only: temp, propunit, uindex, idx_rc
-        use mod_temp, only: cma1, cma2, cma3
+        use arrays
+        use mod_temp
 
         implicit none
 

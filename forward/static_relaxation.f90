@@ -30,9 +30,9 @@
 !> var = (1-theta)*varold + theta*var \n
 subroutine static_relaxation(ijk,ismpl)
 
-  use arrays, only: head, headold, pres, presold, temp, tempold
-  use mod_genrl, only: cgen_time
-  use mod_time, only: thetaf, thetat
+  use arrays
+  use mod_genrl
+  use mod_time
 
   implicit none
 

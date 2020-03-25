@@ -566,6 +566,11 @@
           END DO
           outt(noutt+1) = max_simtime*2.D0 +1.0d0
           WRITE(*,'(A,I4)') '  [R] : output times, records=', noutt
+          IF (.NOT. write_eoutt .AND. &
+            (def_binary=='simul' .OR. &
+            (def_binary=='inverse' .AND. runmode>=2))) THEN
+            WRITE(*,'(A)') '        -> output times may be disabled !'
+          END IF
         ELSE
           outt(1) = max_simtime*2.D0 +1.0d0
           WRITE(*,'(A)') '  <D> : no output times !'

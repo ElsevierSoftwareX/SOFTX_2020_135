@@ -27,9 +27,9 @@
 !> Set variable time step size variables delt_count and flag_delt
 subroutine set_var_deltat(iter_nl, ismpl)
 
-  use arrays, only: delt_count, flag_delt
-  use mod_genrl, only: iter_nlold, maxiter_nl, delt_double, nlconverge
-  use mod_linfos, only: linfos
+  use arrays
+  use mod_genrl
+  use mod_linfos
 
   implicit none
 

@@ -31,7 +31,7 @@
 !> rhof returns the density of the fluid [kg/m3] at node(i,j,k) from the
 !> input file.\n
       double precision function rhof(i,j,k,ismpl)
-        use mod_const, only: fprops, pconst_rhof
+        use mod_const
 
         implicit none
 

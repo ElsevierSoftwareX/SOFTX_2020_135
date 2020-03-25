@@ -42,8 +42,8 @@
 !>    to 5000 bar, and 0 to 1 XNaCl Geochimica et Cosmochimica Acta 71
 !>    (2007) 4902-4919\n \n
       double precision function cpf(i,j,k,ismpl)
-        use arrays, only: temp, pres, tsal
-        use mod_flow, only: pa_conv1
+        use arrays
+        use mod_flow
 
         implicit none
 

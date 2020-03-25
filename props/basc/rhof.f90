@@ -48,8 +48,8 @@
 !>                         Real    S         g/g     Salinity in mass fraction\n
 !>    OUTPUT:        LABEL            RHO            Real     kg/m3  Density of brine \n
       double precision function rhof(i,j,k,ismpl)
-        use arrays, only: temp, pres, tsal
-        use mod_flow, only: pa_conv1
+        use arrays
+        use mod_flow
 
         implicit none
 

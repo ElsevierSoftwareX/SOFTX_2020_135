@@ -36,9 +36,10 @@ endif()
 add_definitions(-DUSE_QDDOT)
 
 
-if(NOT use_rm)
-   add_definitions(-DSTBAY)
-endif()
+#if(NOT use_rm)
+#   add_definitions(-DSTBAY)
+#endif()
+add_definitions(-D${INVTYPE})
 
 if (head_base)
    add_definitions(-Dhead_base)

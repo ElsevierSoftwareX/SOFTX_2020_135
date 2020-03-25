@@ -30,7 +30,7 @@
 !> visf returns the viscosity of the fluid [Pa s] at node(i,j,k) from the
 !> input file.\n\n
       double precision function visf(i,j,k,ismpl)
-        use mod_const, only: fprops, pconst_visf
+        use mod_const
 
         implicit none
 

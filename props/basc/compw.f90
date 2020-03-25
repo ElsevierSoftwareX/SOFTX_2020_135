@@ -66,7 +66,7 @@
 !>   pressure                               p [MPa]\n
 !>   temperature                         t in [degC]\n
       double precision function compw(p_h,t_h)
-        use mod_flow, only: pa_conv
+        use mod_flow
 
         implicit none
 

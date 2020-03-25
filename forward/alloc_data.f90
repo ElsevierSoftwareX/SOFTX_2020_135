@@ -44,6 +44,8 @@
           memory = memory + ndata*n_ddata
           ALLOCATE(idata(ndata,n_idata))
           memory = memory + ndata*n_idata
+          ALLOCATE(resid(ndata))
+          memory = memory + ndata
         END IF
 !
         DEALLOCATE(sdata)
@@ -79,6 +81,8 @@
           memory = memory - ndata*n_ddata
           DEALLOCATE(idata)
           memory = memory - ndata*n_idata
+          DEALLOCATE(resid)
+          memory = memory - ndata
         END IF
         DEALLOCATE(sdata)
         memory = memory - max(ndata,1)*nsmpl

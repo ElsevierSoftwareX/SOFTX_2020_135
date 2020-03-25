@@ -30,7 +30,7 @@
 !> input:\n
 !> cpf returns isobaric heat capacity of the fluid from the input file.\n
       double precision function cpf(i,j,k,ismpl)
-        use mod_const, only: fprops, pconst_cpf
+        use mod_const
 
         implicit none
 

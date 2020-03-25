@@ -24,12 +24,11 @@
 !> @param[in] ismpl local sample index
       subroutine read_props(ismpl)
         use arrays
-        use mod_flow, only: rref
+        use mod_flow
         use mod_genrl
-        use mod_genrlc, only: project
-        use mod_const, only: npropsf, fprops, pconst_rhof, &
-            pconst_compf, pconst_cpf, pconst_lamf, pconst_visf
-        use mod_linfos, only: linfos
+        use mod_genrlc
+        use mod_const
+        use mod_linfos
 
         implicit none
 

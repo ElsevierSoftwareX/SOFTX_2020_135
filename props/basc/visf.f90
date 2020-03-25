@@ -35,8 +35,8 @@
 !>   Pressures 5-100 MPa, Temperature 20-350°C, Salinity <=320 g/L\n
 !>\n
       double precision function visf(i,j,k,ismpl)
-        use arrays, only: pres, temp, tsal
-        use mod_flow, only: pa_conv1
+        use arrays
+        use mod_flow
 
         implicit none
 

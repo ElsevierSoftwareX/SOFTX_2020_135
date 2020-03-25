@@ -28,11 +28,12 @@
 !>    first output to the status log and the command line.
 subroutine forward_preparation(filename, ismpl)
 
-  use mod_genrl, only: runmode
-  use mod_genrlc, only: filename_data
+  use arrays
+  use mod_genrl
+  use mod_genrlc
+  use mod_time
 #ifndef noHDF
-  use mod_input_file_parser_hdf5, only: h5parse_open_datafile, &
-      h5parse_close_datafile
+  use mod_input_file_parser_hdf5
 #endif
   
   implicit none
@@ -59,6 +60,13 @@ subroutine forward_preparation(filename, ismpl)
   IF (runmode>0) CALL read_data(filename_data,ismpl)
   !     split units
   CALL read_split(filename,ismpl)
+
+  IF (test_option('restart')) THEN
+    restart_name = filename(1:lblank(filename)) // '_restart'
+  !       read all necessary data from last save point
+    CALL read_restartfw(restart_name,simtime(ismpl),itimestep_0, &
+        ismpl)
+  END IF
 
   ! First status log output
   call write_status_log(filename, ismpl)

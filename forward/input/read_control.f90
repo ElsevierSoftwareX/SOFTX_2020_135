@@ -40,6 +40,9 @@
 !       External input file switch not set
         if (.not. read_external_input) then
           filename_data = filename
+          filename_simul = filename
+          filename_enkf = filename
+          filename_inverse = filename
           return
         end if
 
@@ -61,6 +64,51 @@
             WRITE(*,*) ' [R] : external file "'//trim(filename_data)//'" for DATA'
 !          ELSE
 !            WRITE(*,*) ' <D> : no external file for DATA'
+          END IF
+        END IF
+!
+        filename_simul = filename
+        IF (def_binary=='simul') THEN
+          IF (found(79,key_char//' simul: external file',line,.FALSE.)) THEN
+            CALL get_arg('file',line,i,j)
+            IF (i<1 .OR. j<i) THEN
+              READ(79,*,err=101,end=101) filename_simul
+            ELSE
+              READ(line(i:j),*) filename_simul
+            END IF
+            WRITE(*,*) ' [R] : external file "'//trim(filename_simul)//'" for SIMUL'
+!          ELSE
+!            WRITE(*,*) ' <D> : no external file for SIMUL'
+          END IF
+        END IF
+!
+        filename_enkf = filename
+        IF (runmode>=2.AND.def_binary=='simul') THEN
+          IF (found(79,key_char//' enkf: external file',line,.FALSE.)) THEN
+            CALL get_arg('file',line,i,j)
+            IF (i<1 .OR. j<i) THEN
+              READ(79,*,err=102,end=102) filename_enkf
+            ELSE
+              READ(line(i:j),*) filename_enkf
+            END IF
+            WRITE(*,*) ' [R] : external file "'//trim(filename_enkf)//'" for ENKF'
+!          ELSE
+!            WRITE(*,*) ' <D> : no external file for ENKF'
+          END IF
+        END IF
+!
+        filename_inverse = filename
+        IF (runmode>=2.AND.def_binary=='inverse') THEN
+          IF (found(79,key_char//' inverse: external file',line,.FALSE.)) THEN
+            CALL get_arg('file',line,i,j)
+            IF (i<1 .OR. j<i) THEN
+              READ(79,*,err=103,end=103) filename_inverse
+            ELSE
+              READ(line(i:j),*) filename_inverse
+            END IF
+            WRITE(*,*) ' [R] : external file "'//trim(filename_inverse)//'" for INVERSE'
+!          ELSE
+!            WRITE(*,*) ' <D> : no external file for INVERSE'
           END IF
         END IF
 !

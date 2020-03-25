@@ -25,7 +25,7 @@
 !> @param[in] ismpl local sample index
       subroutine old_save(level,ismpl)
 
-        use mod_OMP_TOOLS, only: Tlevel_1
+        use mod_OMP_TOOLS
 
         implicit none
 
