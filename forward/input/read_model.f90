@@ -38,6 +38,7 @@
         use mod_conc
         use mod_time
         use mod_data
+        use mod_simul
         use mod_blocking_size
         use mod_OMP_TOOLS
         use mod_linfos
@@ -68,7 +69,6 @@
         INTEGER ijk, omp_inner, omp_outer
         INTEGER i1, i2, nbc_sections
         INTEGER tracer
-        INTEGER sm_max
 !
         INTEGER locstr, lblank, read_direction, get_ioptval
         EXTERNAL locstr, lblank, read_direction, get_ioptval
@@ -164,7 +164,34 @@
           READ(79,*,err=201,end=201) nsmpl
           WRITE(*,'(1A,1I6)') '  [R] : samples =',nsmpl
         END IF
-        sm_max = nsmpl
+!       auto-init default when possible
+        IF (def_binary=='simul') THEN
+          IF (runmode>=2) THEN
+            sm_max = max(1, nsmpl -1)
+          ELSE
+            sm_max = max(1, nsmpl)
+          END IF
+          IF (found(79,key_char//' simulate',line,.FALSE.)) THEN
+            READ(79,*) sm_max
+            WRITE(*,'(1A,1I6)') '  [R] : simulate =',sm_max
+          ELSE
+            WRITE(*,'(1A,1I6)') '  <D> : simulate =',sm_max
+          END IF
+          IF (runmode>=2) THEN
+            nsmpl = sm_max +1
+            WRITE(*,'(1A,1I6,1A)') '  [I] : realisations=', sm_max, '(+1)'
+          ELSE
+            nsmpl = sm_max
+            WRITE(*,'(1A,1I6)') '  [I] : realisations=', sm_max
+          END IF
+        ELSE
+          sm_max = nsmpl
+        END IF
+
+!       default, disable time dependent output events
+        write_eoutt = .FALSE.
+!       re-enable time dependent output events, when realisation-number<=10 (SIMUL/ENKF only)
+        if (def_binary=='simul' .AND. sm_max<=10) write_eoutt = .TRUE.
 
 !       default, disable time dependent output events
         write_eoutt = .FALSE.
@@ -282,6 +309,21 @@
           END IF
 !$OMP   end parallel
 
+#ifndef fMPI
+!       prove for limitations
+        IF (nsmpl>tlevel_0) THEN
+!         ENKF case?
+          IF (def_binary/='simul' .OR. runmode<=1) THEN
+!           ignore it for ENKF, where we need nsmpl = sm_max +1
+            WRITE(*,'(1A,1I4,1A,1I4,1A)') &
+              '  [I] : cutting sample number (', nsmpl, &
+              ') to the number of OpenMP threads (', tlevel_0, ') !'
+!           skip this when ENKF-optimisation is used, then we need "nsmpl=sm_max+1"
+            nsmpl = tlevel_0
+!AW            sm_max = nsmpl
+          END IF
+        END IF
+#endif
 !       use "sm_max" instead of "nsmpl", because of the ENKF case nsmpl = sm_max+1
         IF (tlevel_0>sm_max .AND. nested_build) THEN
           tlevel_0 = sm_max

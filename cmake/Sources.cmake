@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 #Module Files - need to be build prior to all other files
-file (GLOB SRC_MODULES forward/arrays.f90 forward/mod_*.f90 solve/mod_*.f90 hdf5/mod_*.f90)
+file (GLOB SRC_MODULES forward/arrays.f90 forward/mod_*.f90 solve/mod_*.f90 simul/mod_*.f90 hdf5/mod_*.f90) 
 file (GLOB SRC_MODULES_AD inverse/mod_*.f90 inverse/${ADTYPE}/g_arrays.f90 ${ADTYPE}/g_mod*.f* props/${PROPS}/${ADTYPE}/g_mod*.f*) 
 file (GLOB SRC_MODULES_SM simul/mod_*.f90 simul/enkf/m_*.f*)
 
@@ -78,7 +78,7 @@ file(GLOB SRC_PROPS_AD props/${PROPS}/${ADTYPE}/${phys_base}/*.f*)
 
 
 # Include Directories
-include_directories("." "forward" "solve" "inverse" "inverse/${ADTYPE}" "${PROJECT_BINARY_DIR}/generated/")
+include_directories("." "forward" "solve" "simul" "${PROJECT_BINARY_DIR}/generated/" "simul/gs" "inverse" "inverse/${ADTYPE}" "${PROJECT_BINARY_DIR}/generated/")
 
 
 #Sources for Forward Build

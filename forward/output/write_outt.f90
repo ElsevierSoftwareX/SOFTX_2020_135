@@ -40,7 +40,7 @@
         INTRINSIC trim
 
 
-        IF (write_disable .AND. .NOT.write_eoutt) RETURN
+        IF (write_disable .AND. .NOT. write_eoutt) RETURN
 
 !     allowed numerical difference
         numdiff = 1.D-14*tunit

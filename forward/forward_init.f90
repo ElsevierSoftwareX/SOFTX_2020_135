@@ -80,8 +80,7 @@
           main_input(i,idx_master) = get_optip(i,idx_master)
         END DO
 !
-
-        ! init master copy, save state from file init (necessary for transient models)
+        ! init master copy, save state from file init (necessary for transient models, INVERSE and SIMUL/ENKF)
         CALL old_save(cgen_opti,ismpl)
 
         ! Memory information output
