@@ -1,0 +1,177 @@
+# extry copy operations befor dependency analysis starts (tree.csh)
+change_extra = echo ''
+# changeable prefix and suffix for AD objects
+ftlmark=g_
+admark=_ad
+# default ${ad_mode}=="full"
+
+ifeq "${TOOL}" "tap"
+    AD_files_filter=*_ftl.f*
+    #AD_delete_filter=*_c_ftl.f*
+    AD_delete_filter=*_nodiff.f*
+    files_clean=rm -rf ${AD_delete_filter}
+    AD_files_filter_reverse=*${admark}.f*
+    #AD_delete_filter_reverse=*_c${admark}.f*
+    AD_delete_filter_reverse=*_nodiff.f*
+    files_clean_reverse=pwd && rm -rf ${AD_delete_filter_reverse}
+endif
+# define the removing for TLM code generation
+ifeq "${phys_base}" "head"
+    del_base=pres_base
+endif
+ifeq "${phys_base}" "pres"
+    del_base=head_base
+endif
+
+BASE_FUNK=forward_compute
+
+AD_IVARS=dinput
+AD_OVARS=doutput
+#- AD_IVARS=propunit,bcperiod,dbc_data,ddata,head,temp,conc,epot,pres,delxa,delya,delza
+#- AD_OVARS=head,temp,conc,epot,pres,sdata
+#AD_OVARS=sdata
+
+ifeq "${TOOL}" "tap"
+# special bugfix to avoid null-initialisation of global arrays - tapenade bug !!!
+  AD_IVARS=dinput,head,pres,temp,conc,a,b,c,d,e,f,g,x,w,sdata,headold,presold,tempold,concold,dbc_data,bcperiod,propunit
+endif
+
+intrins=char,iargc,trim,system
+#PP_FLAGS = -DG95 -DCLopt -DQDDOT -Dhead_base -DPROPS_bas -DUSER_none
+
+# - - - - - - - - - - - - - - - - - - - - - - - - -
+#files_filter=*.f *.f77 *.f90 *.f95 *.F *.inc
+ffiles_filter=*.f *.f77 *.f90 *.f95 *.F
+f90files_filter=*.f90 *.f95
+ifiles_filter=*.inc
+ModuleLst=$(if $(wildcard $(f90files_filter)),$(shell grep -l -i "end module" $(wildcard ${ffiles_filter})))
+FNAMES= ${ModuleLst} $(filter-out ${ModuleLst},$(wildcard ${ffiles_filter}))
+INAMES=$(wildcard ${ifiles_filter})
+
+default:
+	@echo 'type:                     $(MAKE)   <target>'
+	@echo 'where target is one of:     setup_cleanup | setup_dummycalls | postproc_dummycalls | ftap_sub | rtap_sub | clean '
+	@echo 'with the following meanings: '
+	@echo ' setup_cleanup       = Detect unnecessary calls and files and delete them.'
+	@echo ' setup_dummycalls    = Replace OMP and preproc statements by dummy calls.'
+	@echo ' postproc_dummycalls = Restore OMP and preproc statements from dummy calls.'
+	@echo ' setup_dummycalls_reverse    = Replace OMP and preproc statements by dummy calls (reverse mode).'
+	@echo ' postproc_dummycalls_reverse = Restore OMP and preproc statements from dummy calls (reverse mode).'
+	@echo ' ftap_sub             = Run Tapenade to generate augmented FORTRAN-codes for derivatives (tangent linear = gradient).'
+	@echo ' rtap_sub             = Run Tapenade to generate augmented FORTRAN-codes for derivatives (adjoint`¸s).'
+
+setup_cleanup:
+	@echo "Adding ${TOOL} directives and commenting out useless calls."
+	@${AD_MAKE_DIR}/preparefiles.csh
+	@${change_extra}
+	@${AD_MAKE_DIR}/tree.csh
+	@echo "Deleting unused files."
+	@chmod u+x filelist_notneeded.txt
+	@./filelist_notneeded.txt
+
+setup_dummycalls: 
+	@echo 'Removing ifndef AD preprocessor blocks.'
+	@$(foreach file,${FNAMES},${AD_MAKE_DIR}/remove_nonAD.py ${file}; mv ${file}.new ${file};)
+	@echo "Replacing OMP directives by dummy calls."
+	@$(foreach file,${FNAMES},${AD_MAKE_DIR}/remove_OMP.py ${file}; mv ${file}.new ${file};)
+	@echo 'Removing "${del_base}" preprocessor blocks.'
+	@$(foreach file,${FNAMES},sed -i -ne '/^#ifdef ${del_base}/,/^#endif/!p' ${file};)
+	@echo "Replacing preprocessor directives by dummy calls."
+	@$(foreach file,${FNAMES},${AD_MAKE_DIR}/remove_preproc.py ${file}; mv ${file}.new ${file};)
+	@echo "Adjusting function semantics."
+
+setup_dummycalls_reverse:
+	@echo 'Removing ifndef AD preprocessor blocks.'
+	@$(foreach file,${FNAMES},${AD_MAKE_DIR}/remove_nonAD.py ${file}; mv ${file}.new ${file};)
+	@echo "Removing preprocessor directives with preprocessor flags ${PP_FLAGS}."
+	@$(foreach file,${FNAMES}, gfortran ${PP_FLAGS} -x f95-cpp-input -E -P ${file} > ${file}.new; mv ${file}.new ${file};)
+	@echo "Replacing OMP directives by dummy calls."
+	@$(foreach file,${FNAMES},${AD_MAKE_DIR}/remove_OMP.py ${file}; mv ${file}.new ${file};)
+	@echo 'Remove "${del_base}" preprocessor blocks.'
+	@$(foreach file,${FNAMES},sed -i -ne '/^#ifdef ${del_base}/,/^#endif/!p' ${file};)
+	@echo "Replacing preprocessor directives by dummy calls."
+	@$(foreach file,${FNAMES},${AD_MAKE_DIR}/remove_preproc.py ${file}; mv ${file}.new ${file};)
+	@echo "Deleting dummy calls."
+	@$(foreach file,${FNAMES},sed -i -r -e 's/call +dummy.*//i' ${file};)
+	@echo "Adjusting function semantics."
+#	@$(foreach file,${FNAMES},${AD_MAKE_DIR}/adjust_function_type.py ${file}; mv ${file}.new ${file};)
+
+
+deleted_files=$(wildcard ${AD_delete_filter})
+current_files=$(filter-out ${deleted_files},$(wildcard ${AD_files_filter}))
+#TODO: Bugfixes for tapenade 3.15
+postproc_dummycalls:
+	@echo "Restoring OMP and preprocessor directives from dummy calls."
+#move calc_user_c_ftl.f90 to calc_user_ftl.f90 (to prevent it from being deleted)
+ifeq "${TOOL}" "tap"
+	@-sed -i -re "s/calc_user_nodiff/calc_user_ftl/gi" calc_user_nodiff.f90 
+	@-mv calc_user_nodiff.f90 calc_user_ftl.f90
+endif
+	-${files_clean}
+ifeq "${TOOL}" "tap"
+	@$(foreach file,${current_files},${AD_MAKE_DIR}/remove_dummy.py ${file}; sed -i -re "s/_nodiff//gi" ${file}.new; sed -re "s/([a-z0-9_]+)_ftl/${ftlmark}\1/gi" ${file}.new > ${file}; rm ${file}.new;)
+	@echo "Adding the original module and include files."
+	@$(foreach file,${current_files},${AD_MAKE_DIR}/use_include_g.py ${file}; mv ${file}.new ${file};)
+	@echo "Checking for definition of all external functions"
+	@$(foreach file,${current_files},${AD_MAKE_DIR}/check_g_externals.py ${file}; mv ${file}.new ${file};)
+	@$(foreach file,${current_files},${AD_MAKE_DIR}/check_temp.py ${file}; mv ${file}.new ${file};)
+endif
+
+deleted_files_reverse=$(wildcard ${AD_delete_filter_reverse})
+current_files_reverse=$(filter-out ${deleted_files_reverse},$(wildcard ${AD_files_filter_reverse}))
+user_none=$(echo "$(CURDIR)" | grep "none")
+postproc_dummycalls_reverse:
+	@echo "Restoring OMP and preprocessor directives from dummy calls."
+#move calc_user_nodiff.f90 to calc_user_ad.f90 (to prevent it from being deleted)
+ifeq "${TOOL}" "tap"
+	@-sed -i -re "s/calc_user_nodiff/calc_user_ad/gi" calc_user_nodiff.f90
+	@-mv calc_user_nodiff.f90 calc_user_ad.f90
+endif
+	-${files_clean_reverse}
+	@echo '#${current_files_reverse}#'
+	@$(foreach file,${current_files_reverse},${AD_MAKE_DIR}/remove_dummy.py ${file}; sed -re "s/_nodiff//gI ; s/^([[:space:]]*use .*${admark})v/\1/gI" ${file}.new > ${file}; rm ${file}.new;)
+ifeq "${TOOL}" "tap"
+	@echo "Adding the original module and include files."
+	@$(foreach file,${current_files_reverse},${AD_MAKE_DIR}/use_include_g.py ${file}; mv ${file}.new ${file};)
+	@$(foreach file,${current_files_reverse},${AD_MAKE_DIR}/check_subroutine_adrm.py ${file}; mv ${file}.new ${file};)
+	@$(foreach file,${current_files_reverse},${AD_MAKE_DIR}/check_temp.py ${file}; mv ${file}.new ${file};)
+endif
+
+clean :
+	-rm -f core
+	-rm -rf grad
+	-rm -rf adm
+
+#        Generate first order derivs tapenade
+ftap_sub : ${FNAMES}
+	-@rm -rf grad
+	@mkdir grad
+	#Tapenade 3.14+3.15
+	tapenade -d -head ${BASE_FUNK} -tgtvarname _ftl -tgtfuncname _ftl -modulename _ftl -vars ${AD_IVARS} -outvars ${AD_OVARS} ${FNAMES} -splitoutputfiles -O grad
+#3.13	tapenade -d -head ${BASE_FUNK} -tgtvarname _ftl -tgtfuncname _ftl -modulename _ftl -vars ${AD_IVARS} -outvars ${AD_OVARS} ${FNAMES} -O grad
+#3.11	tapenade -d -head ${BASE_FUNK} -tgtvarname _ftl -tgtfuncname _ftl -vars ${AD_IVARS} -outvars ${AD_OVARS} ${FNAMES} -O grad 
+	@cp Makefile grad/
+	@cd grad;$(MAKE) postproc_dummycalls TOOL=${TOOL}; cd ..
+
+
+#in reverse mode, active functions are transformed into subroutines that get the name of the original function with _ad0, since there exist a parameter of that same name without 0
+#the resulting file has the _ad0 in its name, generating a problem with the other scripts. Thus renaming the file to _ad solves this issue
+cleanup_reverse=$(wildcard *${admark}0.f*)
+adv_reverse=$(wildcard *${admark}v*.f90)
+postproc_tap_rev:
+	$(foreach file,${adv_reverse},echo "[I] Moving ${file} to $(subst ${admark}v,${admark},${file})"; mv ${file} $(subst ${admark}v,${admark},${file});)
+	$(foreach file,${cleanup_reverse},echo "[I] Moving ${file} to $(subst ${admark}0,${admark},${file})"; mv ${file} $(subst ${admark}0,${admark},${file});)
+
+rtap_sub :
+	rm -rf adjoint
+	mkdir adjoint
+	tapenade -noisize -i8 -b -head ${BASE_FUNK} -adjvarname ${admark} -adjfuncname ${admark} -modulename ${admark} -vars ${AD_IVARS} -outvars ${AD_OVARS} ${FNAMES} -splitoutputfiles -O adjoint
+	@cp Makefile adjoint/
+	@echo "Cleaning up the environment [*${admark}0.f90 is a bug in tapenade]"
+	@cd adjoint;$(MAKE) postproc_tap_rev TOOL=tap;$(MAKE) postproc_dummycalls_reverse TOOL=tap; cd ..
+
+showall:
+	@echo INAMES: ${INAMES}
+	@echo FNAMES: ${FNAMES}
+	@echo ModuleLst: ${ModuleLst}
+

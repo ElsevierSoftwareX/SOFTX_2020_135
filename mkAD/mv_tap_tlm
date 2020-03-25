@@ -1,0 +1,124 @@
+#!/bin/bash
+# move corresponding AD generated files to correct directories
+# next four from environment:
+#   $props_lst="bas basc frac ice IAPWS conv const soultz kola hotprops"
+#   $props_user="wells3d"
+#   $users_lst="wells wells3d wells6 wells3dN_CK none"
+#   $users_prop="basc"
+echo '  [I] : $props_lst = '$props_lst
+echo '  [I] : $props_user = '$props_user
+echo '  [I] : $users_lst = '$users_lst
+echo '  [I] : $user_prop = '$users_prop
+
+#
+ad_lst="g_tap"
+# rm hand coded and special stuff
+del_lst="arrays_ftl.f90 solve_ftl.f90 forward_wrapper_ftl.f90 check_change_ftl.f90 mod_blocking_size_ftl.f90 mod_const_ftl.f90 mod_epot_ftl.f90 mod_genrlc_ftl.f90 mod_linfos_ftl.f90 mod_temp_ftl.f90 mod_wells3d_ftl.f90 mod_conc_ftl.f90 mod_data_ftl.f90 mod_flow_ftl.f90 mod_genrl_ftl.f90 mod_omp_tools_ftl.f90 mod_time_ftl.f90 calc_user_ftl.f90 head2pres_ftl.f90 old_restore_ftl.f90"
+# rm BLAS1 stuff
+del_lst+=" daxpy_ftl.f90 dcopy_ftl.f90 dscal_ftl.f90"
+props_fmask="*.f*"
+props_base=$users_prop
+users_fmask="*calc_user*.f*"
+physbase=$phys_base
+#
+for adtype in ${ad_lst} ; do
+  #
+  # work on USER
+  add=${users_prop}
+  for wel in $users_lst ; do
+    if test -d "${adtype}/${physbase}/${add}/${wel}" ; then
+      echo -e '\n New USER configuration ['${adtype}/${physbase}'], ['${wel}'] !\n'
+      #
+      users_files=$(cd ${adtype}/${physbase}/${add}/${wel};ls ${users_fmask});
+      for users_file in $users_files ; do
+        if test -s "${adtype}/${physbase}/${add}/${wel}/${users_file}" ; then
+          echo '  [I] : move "'${adtype}/${physbase}'/'${add}'/'${wel}'/'${users_file}'" !'
+          mkdir -p user/${wel}/${adtype}/${physbase}
+          sed -i -r "s/tapenade 3\..*/tapenade 3\.x/i" ${adtype}/${physbase}/${add}/${wel}/${users_file}
+          mv ${adtype}/${physbase}/${add}/${wel}/${users_file} user/${wel}/${adtype}/${physbase}/
+        fi
+        if test -e "${adtype}/${physbase}/${add}/${wel}/${users_file}" ; then
+          rm -f ${adtype}/${physbase}/${add}/${wel}/${users_file}
+        fi
+      done;
+    fi
+  done;
+  #
+  # delete special files
+  for add in $props_lst ; do
+    for wel in $users_lst ; do
+      for datei in ${del_lst} ; do
+        if test -e "${adtype}/${physbase}/${add}/${wel}/${datei}" ; then
+          grep -ioE "tapenade .*" ${adtype}/${physbase}/${add}/${wel}/${datei} > ${adtype}/${physbase}/tool.ver
+          rm -f ${adtype}/${physbase}/${add}/${wel}/${datei}
+          echo "Deleting file ${adtype}/${physbase}/${add}/${wel}/${datei}"
+        fi
+      done;
+    done;
+  done;
+  rm ${adtype}/${physbase}/${props_fmask}
+  #
+  # test and move copies away
+  wel=${props_user}
+  echo "Testing for ${adtype}/${physbase}/${props_base}/${wel}"
+  if test -d "${adtype}/${physbase}/${props_base}/${wel}" ; then
+    # list of files
+    test_files=$(cd ${adtype}/${physbase}/${props_base}/${wel}/; ls ${props_fmask});
+    #
+    for test_datei in ${test_files} ; do
+      found_diff=""
+      # test the file with dfferent PROPS
+      for add in $props_lst ; do
+        if test -s "${adtype}/${physbase}/${add}/${wel}/${test_datei}" ; then
+          found_diff+=$(diff -I "^\!" -ibBq ${adtype}/${physbase}/${props_base}/${wel}/${test_datei} ${adtype}/${physbase}/${add}/${wel}/${test_datei})
+        else
+          found_diff+=${adtype}"/"${physbase}"/"${add}"/"${wel}"/"${test_datei}" not exist"
+        fi
+        if test "${found_diff}" != "" ; then
+          # mark it as "not equal"
+          found_diff="differs"
+        fi
+      done;
+      # mark it as "equal" generate one copy for all
+      if test "${found_diff}" = "" ; then
+        found_diff="is equal"
+        sed -i -r "s/tapenade 3\..*/tapenade 3\.x/i" ${adtype}/${physbase}/${props_base}/${wel}/${test_datei}
+        cp ${adtype}/${physbase}/${props_base}/${wel}/${test_datei} ${adtype}/${physbase}/${test_datei}
+        # cleanup the copies
+        for add in $props_lst ; do
+          rm -f ${adtype}/${physbase}/${add}/${wel}/${test_datei}
+        done;
+      fi
+      echo '  [I] : '${test_datei}' '${found_diff}' !'
+    done;
+  else
+    echo 'error: <props_base> not well defined in "mkAD/mv_tap_tlm"!'
+    exit;
+  fi;
+  #
+  # work on PROPS
+  wel=${props_user}
+  for add in $props_lst ; do
+    echo "Checking for ${adtype}/${physbase}/${add}/${wel}"
+    if test -d "${adtype}/${physbase}/${add}/${wel}" ; then
+      echo -e '\n New PROPS configuration ['${adtype}/${physbase}'], ['${add}'] !\n'
+      #
+      mkdir -p props/${add}/${adtype}/${physbase}
+      files=$(ls ${adtype}/${physbase}/${add}/${wel}/${props_fmask});
+      for datei in ${files} ; do
+        if test -s "${datei}" ; then
+          echo '  [I] : move "'${datei}'" !'
+          sed -i -r "s/tapenade 3\..*/tapenade 3\.x/i" ${datei}
+          mv ${datei} props/${add}/${adtype}/${physbase}/
+        fi
+        if test -e "${datei}" ; then
+          rm -f ${datei}
+        fi
+      done;
+      # delete directory (cleanup)
+      rm -rf ${adtype}/${physbase}/${add}
+    fi
+  done;
+done
+#
+echo -e '\n AD sources moved !\n'
