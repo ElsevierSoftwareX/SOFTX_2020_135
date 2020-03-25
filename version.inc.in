@@ -1,0 +1,15 @@
+!     this file will be generated automatically - change the Makefile !!!
+!     current version
+      character version*80
+      parameter (version = "@PROJECT_NAME@ @PROJECT_VERSION@ (@PROJECT_DESCRIPTION@)")
+!     current date
+      character datum*40
+      parameter (datum = "@_configuration_time@")
+!     build command line
+      character makecmd*256
+      parameter (makecmd = &
+     "PROPS=@PROPS@ "// &
+     "USER=@USER@ "// &
+     "COMPTYPE=@COMPTYPE@ "// &
+     "")
+
