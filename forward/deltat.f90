@@ -41,11 +41,9 @@
 !> time step accordingly.
       double precision function deltat(sim_time,ismpl)
 
-        use arrays, only: delta_time, flag_1st_timestep, delt_count, &
-            delt_old, flag_delt, simtime, outt
-        use mod_genrl, only: delt_double, delt_min, delt_max, delt_start, &
-            delt_vary
-        use mod_time, only: max_simtime, simtime_0, noutt, ntimestep
+        use arrays
+        use mod_genrl
+        use mod_time
 
         implicit none
 

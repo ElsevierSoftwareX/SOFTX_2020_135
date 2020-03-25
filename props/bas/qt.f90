@@ -31,7 +31,7 @@
 !> input file.\n
       double precision function qt(i,j,k,ismpl)
 
-        use arrays, only: propunit, uindex, idx_q
+        use arrays
 
         implicit none
 

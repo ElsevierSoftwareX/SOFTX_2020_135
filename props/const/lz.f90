@@ -35,7 +35,7 @@
 !> thermal conductivity of fluid           lamf [W/(m*K)]\n
 !> thermal conductivity of matrix       lammref [W/(m*K)]\n
       double precision function lz(i,j,k,ismpl)
-        use arrays, only: propunit, uindex, idx_lz
+        use arrays
 
         implicit none
 

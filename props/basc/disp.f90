@@ -30,7 +30,7 @@
 !> assign effective diffusivity, called dispersivity in the input
 !> file.
       double precision function disp(i,j,k,ismpl)
-        use arrays, only: propunit, uindex, idx_df
+        use arrays
 
         implicit none
 

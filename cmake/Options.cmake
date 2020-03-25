@@ -38,7 +38,8 @@ message(STATUS "phys_base='${phys_base}'")
 set(USER "none" CACHE STRING "The Userfunction to be used (standard is none)")
 set(PROPS "const" CACHE STRING "The Properties to be used (standard is const)")
 
-
+set(INVTYPE "STBAY" CACHE STRING "Inversion methods")
+set_property(CACHE INVTYPE PROPERTY STRINGS "STBAY" "DSPAC" "PSPAC" "MF_STBAY")
 # Solvertype for Nonlinear Coupling
 set(NLSOLVETYPE "stdFW" CACHE STRING "Nonlinear Solver")
 set_property(CACHE NLSOLVETYPE PROPERTY STRINGS "stdFW" "nwtFW" "nitFW")

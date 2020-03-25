@@ -26,7 +26,7 @@
 !> Check the local/current PROPS ldef_props against the PROPS choice
 !> in the input file (def_props).
       subroutine props_check(ismpl)
-        use mod_genrlc, only: def_props
+        use mod_genrlc
 
         implicit none
 

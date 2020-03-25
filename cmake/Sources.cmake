@@ -40,7 +40,7 @@ endif()
 #Inverse Files
 file(GLOB SRC_INVERSE inverse/*.f* inverse/${ADTYPE}/*.f* ${ADTYPE}/${phys_base}/*.f* blas/${ADTYPE}/*.f*)
 if (use_rm)
-   file(GLOB SRC_ADHELPER mkAD/ADFirstAidKit/adBuffer.f mkAD/ADFirstAidKit/adStack.c)
+   #   file(GLOB SRC_ADHELPER mkAD/ADFirstAidKit/adBuffer.f mkAD/ADFirstAidKit/adStack.c)
    file(GLOB SRC_MODULES_AD_RM inverse/mod_*.f90 inverse/${AD_RMTYPE}/arrays_ad.f90 inverse/${AD_RMTYPE}/mod_*_ad.f* props/${PROPS}/${AD_RMTYPE}/${phys_base}/mod_*_ad.f*)
    list(APPEND SRC_MODULES_AD ${SRC_MODULES_AD_RM})
    file(GLOB SRC_INVERSE_RM inverse/${AD_RMTYPE}/* ${AD_RMTYPE}/${phys_base}/*.f* blas/${AD_RMTYPE}/*.f* props/${PROPS}/${AD_RMTYPE}/${phys_base}/*.f* user/${USER}/${AD_RMTYPE}/${phys_base}/*.f*)
@@ -48,7 +48,7 @@ if (use_rm)
 endif()
 
 #HDF FILES
-file(GLOB SRC_HDF hdf5/add_cube.f90 hdf5/open_hdf5.f90 hdf5/close_hdf5.f90 hdf5/closeopen_hdf5.f90 hdf5/test_hdf5.f90 hdf5/read_hdf5.f90 hdf5/read_hdf5_int.f90 hdf5/write_all_hdf5.f90 hdf5/add_line.f90  hdf5/write_parameter2_hdf5.f90 hdf5/add_plane.f90   hdf5/write_parameter_hdf5.f90  hdf5/read_outt_hdf5.f90 )
+file(GLOB SRC_HDF inverse/mod_inverse.f90 hdf5/add_cube.f90 hdf5/open_hdf5.f90 hdf5/close_hdf5.f90 hdf5/closeopen_hdf5.f90 hdf5/test_hdf5.f90 hdf5/read_hdf5.f90 hdf5/read_hdf5_int.f90 hdf5/create_hdf5.f90 hdf5/write_all_hdf5.f90 hdf5/add_line.f90   hdf5/write_hdf5.f90 hdf5/write_hdf5_int.f90 hdf5/write_parameter2_hdf5.f90 hdf5/add_plane.f90   hdf5/write_parameter_hdf5.f90  hdf5/read_outt_hdf5.f90 )
 #HDF FILES FOR INVERSE
 file(GLOB SRC_HDF_AD inverse/mod_inverse.f90 hdf5/write_joutt_hdf5.f90  hdf5/read_joutt_hdf5.f90  hdf5/write_inv_hdf5.f90 )
 
@@ -78,7 +78,7 @@ file(GLOB SRC_PROPS_AD props/${PROPS}/${ADTYPE}/${phys_base}/*.f*)
 
 
 # Include Directories
-include_directories("." "forward" "solve" "${PROJECT_BINARY_DIR}/generated/")
+include_directories("." "forward" "solve" "inverse" "inverse/${ADTYPE}" "${PROJECT_BINARY_DIR}/generated/")
 
 
 #Sources for Forward Build
@@ -112,7 +112,7 @@ file(GLOB SRC_LAPACK lapack/*.f*)
 #Directories needed for AD generation
 list(APPEND AD_DIRECTORIES forward forward/input forward/output forward/shemach forward/strngut forward/ctrlut
   forward/temp forward/conc forward/mathfuncs hdf5 solve blas)
-if(pres)
+if(pres_base)
    list(APPEND AD_DIRECTORIES forward/pres)
 else()
    list(APPEND AD_DIRECTORIES forward/head)
@@ -120,7 +120,7 @@ endif()
 
 # Define user and property directories for AD generation process (wells3d and basc are required, c.f AD.cmake)
 list(APPEND USER_DIRECTORIES wells3d none)# gheexpl)# wells wells6 wells3d_s3w wells3dN_CK wells3dN_CK3B wells3d_fine wells3d_stoch wells3d_stoch_3B wells3d_stoch_s3w gheloop gheexpl)
-list(APPEND PROPS_DIRECTORIES basc const bas)# ice kola)# conv basd frac ice kola)
+list(APPEND PROPS_DIRECTORIES basc const bas ice ghe)# kola)# conv basd frac kola)
 
 list(APPEND USER_DIRECTORIES_FULL USER_DIRECTORIES)
 list(APPEND PROPS_DIRECTORIES_FULL PROPS_DIRECTORIES)

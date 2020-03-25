@@ -30,7 +30,7 @@
 !> compf returns the compressibility of the fluid [1/Pa] at node(i,j,k)
 !> from the input file.\n
       double precision function compf(i,j,k,ismpl)
-        use mod_const, only: fprops, pconst_compf
+        use mod_const
 
         implicit none
 

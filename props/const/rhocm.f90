@@ -30,7 +30,7 @@
 !> rhocm returns the volumetric heat capacity [J/(K*m3)] at
 !> node(i,j,k) from the input file.\n
       double precision function rhocm(i,j,k,ismpl)
-        use arrays, only: propunit, uindex, idx_rc
+        use arrays
 
         implicit none
 

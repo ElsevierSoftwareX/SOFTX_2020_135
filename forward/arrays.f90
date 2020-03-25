@@ -432,6 +432,62 @@
         INTEGER first_conc, last_conc
         INTEGER nbc_data
 
+!     derivative nl. tolerance
+        DOUBLE PRECISION nltol_g(npv)
+
+!     SM/simulate
+        DOUBLE PRECISION, ALLOCATABLE :: propunitold(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: bcperiodold(:,:,:)
+
+!     -------
+!     inverse (AD) & simulate (SIMUL/ENKF)
+        INTEGER mpara
+
+!     -------
+!     inverse
+        INTEGER, ALLOCATABLE :: opti_props(:,:)
+        INTEGER, ALLOCATABLE :: opti_bc(:,:)
+        INTEGER, ALLOCATABLE :: opti_tp(:,:)
+!       1: alpha; 2: beta modificators
+        INTEGER mopti_tp
+        PARAMETER (mopti_tp=2)
+!
+        DOUBLE PRECISION propwgt(nprop)
+        DOUBLE PRECISION bcwgt(nbc)
+        DOUBLE PRECISION, ALLOCATABLE :: tpwgt(:,:,:)
+
+!     apriori (inverse)
+        DOUBLE PRECISION, ALLOCATABLE :: a_propunit(:,:)
+
+!     error (apriori)
+        DOUBLE PRECISION, ALLOCATABLE :: d_propunit(:,:)
+
+!     error (aposteriori)
+        DOUBLE PRECISION, ALLOCATABLE :: e_propunit(:,:)
+
+        DOUBLE PRECISION, ALLOCATABLE :: resid(:)
+        DOUBLE PRECISION, ALLOCATABLE :: wdt(:)
+
+!     main parameter input vector for forward simulation (see "forward_compute")
+        DOUBLE PRECISION, ALLOCATABLE :: main_input(:,:)
+!     main data output vector for forward simulation (see "forward_compute")
+        DOUBLE PRECISION, ALLOCATABLE :: main_output(:,:)
+!
+!     for jacobi computation (INVERSE) / ENKF /SIMUL
+!       parameter master copy
+        DOUBLE PRECISION, ALLOCATABLE :: main_input_master(:)
+!     for jacobi computation (INVERSE)
+!       dense apriori parameter vector
+        DOUBLE PRECISION, ALLOCATABLE :: apri_input(:)
+!       lin/log converted parameter vector
+        DOUBLE PRECISION, ALLOCATABLE :: linlog_input(:)
+!       derivative parameter vector
+        DOUBLE PRECISION, ALLOCATABLE :: g_main_input(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: main_input_ad(:,:)
+!       dense Jacobi matrix, instead of "g_main_output"
+        DOUBLE PRECISION, ALLOCATABLE :: jac(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: jacT(:,:)
+
         ! Observed data
         ! -------------
 
@@ -527,6 +583,14 @@
         !> Number of different double-precision-parameters arrays in
         !> ddata.
         integer, parameter :: n_ddata = 6
+
+        DOUBLE PRECISION, ALLOCATABLE :: covar_prior_p(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: covar_prior_d(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: covar_p(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: covar_d(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: resmat_p(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: resmat_d(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: ginv(:,:)
 
 !     jump table between parameter index and seeding
         INTEGER, ALLOCATABLE :: seed_para(:,:)
@@ -651,6 +715,14 @@
         !> Size: [I0*J0*K0,max(ntrans,1),ncgen,nsmpl], used for forward newton iteration
         double precision, allocatable, dimension (:,:,:,:) :: concold
 
+!       gradient of the quality function
+        DOUBLE PRECISION, ALLOCATABLE :: grad(:)
+!       second derivative (old backup values or diagonal of the hesse matrix), of the quality function
+        DOUBLE PRECISION, ALLOCATABLE :: grad_sec(:)
+
+        DOUBLE PRECISION, ALLOCATABLE :: tmp_vec(:,:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: tmp_mat(:,:)
+
 !     BC time period: (period-index,value-type,TP-ID,sample)
 !     - value-type: time, BC-value
         DOUBLE PRECISION, ALLOCATABLE :: bcperiod(:,:,:,:)
@@ -678,6 +750,11 @@
         !> - number of time steps per period \n
         !> - step type (f.e. distributed linearly, logarithmically) \n
         double precision, allocatable, dimension (:) :: delta_time
+
+!     for inverse computation
+        DOUBLE PRECISION, ALLOCATABLE :: a_bcperiod(:,:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: d_bcperiod(:,:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: e_bcperiod(:,:,:)
 
         !> @brief Simulation time
         !> @details
@@ -730,9 +807,16 @@
         DOUBLE PRECISION, ALLOCATABLE :: omp_dglobal(:,:,:)
         INTEGER, ALLOCATABLE :: omp_iglobal(:,:,:)
 
+!---- only inversion READING instead of COMPUTING, see "read_joutt_hdf" ----
+        INTEGER, ALLOCATABLE :: seed_index(:)
+
 !---- only for DEBUG !!! ----
         INTEGER n_debugout
 !     [2,n_debugout]: 1: time step, 2: nl iteration
         INTEGER, ALLOCATABLE :: debugout(:,:)
+!     OpenMP thread handling from function lib
+        LOGICAL :: fl_omp_set = .false.
+        INTEGER :: fl_omp_outer=0, fl_omp_inner=0
+
 
       END MODULE arrays

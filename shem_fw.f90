@@ -44,6 +44,7 @@ program shem_fw
   use mod_genrl
   use mod_genrlc
   use mod_time
+  use mod_OMP_TOOLS
 #ifndef noHDF
   use mod_input_file_parser_hdf5
 #endif
@@ -72,8 +73,9 @@ program shem_fw
 
 
   CALL sys_cputime(tsglobal)
-
+  nested_build = .FALSE.
   ismpl = 1
+  def_binary = 'forward'
 
   write(*,*) ' '
   write(*,*) '======================================'
@@ -107,7 +109,7 @@ program shem_fw
   call forward_init(ismpl)
 
   ! ---------
-  call forward_iter(simtime_0,max_simtime,ismpl)
+  call forward_iter(simtime_0,max_simtime,-1,0,ismpl)
   ! ---------
 
   !     output

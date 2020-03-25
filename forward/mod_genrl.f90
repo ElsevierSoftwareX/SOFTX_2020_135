@@ -22,6 +22,8 @@
 
 !>    @brief commonly used global variables and constants
 module mod_genrl
+      double precision tslocal
+!
 
       !> @brief Memory of data in 8Bytes (std. double precision size).
       !> @details
@@ -114,7 +116,7 @@ module mod_genrl
       !> Disables output in write_logs, write_data, write_outt,
       !> write_tecdiff, write_monitor.
       logical write_disable
-      logical write_smonitor, write_param
+      logical write_smonitor, write_param, write_eoutt
 
       !> @brief Switch for disabling iteration output.
       !> @details
@@ -171,7 +173,7 @@ module mod_genrl
       !> Number of possible old saved arrays. \n\n
       !>
       !> max number of "cgen_*"
-      integer, parameter :: ncgen = 2
+      integer, parameter :: ncgen = 5
 
       !> @brief Index constant for old saved arrays.
       !> @details
@@ -196,6 +198,24 @@ module mod_genrl
       !>
       !>       time iteration
       integer, parameter :: cgen_time = 2
+
+      !> @brief Index constant for old saved arrays.
+      !> @details
+      !> Index constant for old saved arrays. \n\n
+      !>
+      !> index constants for HEAD, TEMP and PRES
+      !> forward iteration [x_i-1,j];
+      !> do not change it without a change of any
+      !> "headold" into "headold(1,cgen_fw)" ccc\n\n
+      !>
+      !>       nonlinear-forward iteration (use of ad)
+      integer, parameter :: cgen_fwad = 3
+!
+!       optimisation/realisation iteration [x_*,j]
+!         index constants for g_HEAD, g_TEMP and g_PRES
+        integer, parameter :: cgen_opti = 4
+!       special DD use [f(x_*,j)]
+        integer, parameter :: cgen_dd = 5
 
       !       index of the <master> sample
       integer, parameter :: idx_master=1

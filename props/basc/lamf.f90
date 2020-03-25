@@ -47,8 +47,8 @@
 !> temperature                          t in [C]\n
 !> salinity                              s in [mol/L]\n
       double precision function lamf(i,j,k,ismpl)
-        use arrays, only: pres, temp, tsal
-        use mod_flow, only: pa_conv1
+        use arrays
+        use mod_flow
         IMPLICIT NONE
 
         ! Location indices

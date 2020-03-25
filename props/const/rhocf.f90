@@ -27,7 +27,7 @@
 !> @param[in] ismpl local sample index
 !> @return  rhocf  rc[W/(m*K)]
       double precision function rhocf(i,j,k,ismpl)
-        use mod_const, only: fprops, pconst_cpf, pconst_rhof
+        use mod_const
 
         implicit none
 

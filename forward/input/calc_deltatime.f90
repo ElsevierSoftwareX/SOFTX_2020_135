@@ -37,9 +37,9 @@
 !> (10**((n-j)/n*((tstart-tend)/tunit + 1)) - 1) \n\n
 subroutine calc_deltatime(ismpl)
 
-  use arrays, only: delta_time
-  use mod_genrl, only: memory
-  use mod_time, only: nperiod, ntimestep, tunit, iperiod, dperiod
+  use arrays
+  use mod_genrl
+  use mod_time
 
   implicit none
 

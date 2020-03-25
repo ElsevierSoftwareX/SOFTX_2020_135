@@ -24,11 +24,12 @@
 !>    @param[in] filename input filename as read from shemade.job
 !>    @param[inout] ismpl local sample index
 !>    @details
-!>    The status.log file is named and the header is written.
+!>    The status.log file is named and the header is written depending
+!>    on whether the restart option was given in the command line.
 subroutine write_status_log(filename, ismpl)
 
-  use mod_genrlc, only: status_log
-  use mod_time, only: transient
+  use mod_genrlc
+  use mod_time
 
   implicit none
 
@@ -42,23 +43,43 @@ subroutine write_status_log(filename, ismpl)
   logical, external :: test_option
 
   status_log = filename(1:lblank(filename)) // '_status.log'
+  status_log_inv = filename(1:lblank(filename)) // &
+      '_status-inv.log'
 
-  WRITE(*,'(3A)') '  [W] : "', status_log(1:lblank(status_log)), '"'
-  OPEN(76,file=status_log)
-  WRITE(76,'(2A)') '% Shemat-Suite version: ', version
-  WRITE(76,'(2A)') '%          build: ', datum
-  WRITE(76,'(2A)') '%   build command line: ', makecmd
-  WRITE(76,'(3A)') '%        Project: "', filename(1:lblank(filename)), '"'
-  WRITE(76,'(1A)') '%'
-  IF (transient) THEN
-    WRITE(76,'(3A)') '% <time step>', ' <deltat>', ' <cum time>'
-  END IF
+  IF (test_option('restart')) THEN
+    WRITE(*,'(3A)') '  [W] : "', status_log(1:lblank(status_log)), '"'
+    OPEN(76,file=status_log,status='unknown',position='append')
+    WRITE(76,'(3A)') '%    restart Project: "',filename(1:lblank(filename)), '"'
+    WRITE(76,'(1A)') '%'
+    IF (transient) THEN
+      WRITE(76,'(3A)') '% <time step>', ' <deltat>', ' <cum time>'
+    END IF
 #ifdef head_base
-  WRITE(76,'(4A)') '%    <iteration>',' <delta head>',' <delta temp>',' (<delta conc> ...)'
+    WRITE(76,'(4A)') '%    <iteration>',' <delta head>',' <delta temp>',' (<delta conc> ...)'
 #endif
 #ifdef pres_base
-  WRITE(76,'(4A)') '%    <iteration>',' <delta pres>',' <delta temp>',' (<delta conc> ...)'
+    WRITE(76,'(4A)') '%    <iteration>',' <delta pres>',' <delta temp>',' (<delta conc> ...)'
 #endif
-  CLOSE(76)
+    CLOSE(76)
+
+  ELSE
+    WRITE(*,'(3A)') '  [W] : "', status_log(1:lblank(status_log)), '"'
+    OPEN(76,file=status_log)
+    WRITE(76,'(2A)') '% Shemat-Suite version: ', version
+    WRITE(76,'(2A)') '%          build: ', datum
+    WRITE(76,'(2A)') '%   build command line: ', makecmd
+    WRITE(76,'(3A)') '%        Project: "', filename(1:lblank(filename)), '"'
+    WRITE(76,'(1A)') '%'
+    IF (transient) THEN
+      WRITE(76,'(3A)') '% <time step>', ' <deltat>', ' <cum time>'
+    END IF
+#ifdef head_base
+    WRITE(76,'(4A)') '%    <iteration>',' <delta head>',' <delta temp>',' (<delta conc> ...)'
+#endif
+#ifdef pres_base
+    WRITE(76,'(4A)') '%    <iteration>',' <delta pres>',' <delta temp>',' (<delta conc> ...)'
+#endif
+    CLOSE(76)
+  END IF
   
 end subroutine write_status_log

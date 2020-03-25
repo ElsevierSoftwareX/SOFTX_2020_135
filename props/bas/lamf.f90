@@ -41,7 +41,7 @@
 !>
 !>      temperature tlocal in [C]\n
       double precision function lamf(i,j,k,ismpl)
-        use arrays, only: temp
+        use arrays
 
         implicit none
 

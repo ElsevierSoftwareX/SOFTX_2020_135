@@ -33,7 +33,7 @@
 !> The permeability in y-direction is the product of the permeability
 !> in z-direction and the anisotropy factor for the y-direction.
       double precision function ky(i,j,k,ismpl)
-        use arrays, only: propunit, uindex, idx_kz, idx_an_ky
+        use arrays
 
         implicit none
 

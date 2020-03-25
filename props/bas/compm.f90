@@ -30,7 +30,7 @@
 !> compm returns the compressibility [1/Pa] at node(i,j,k) from the
 !> input file.\n
       double precision function compm(i,j,k,ismpl)
-        use arrays, only: propunit, uindex, idx_comp
+        use arrays
 
         implicit none
 

@@ -686,6 +686,11 @@
         CALL h5pclose_f(plist_id,error)
         CALL h5fclose_f(file_id,error)
 
+!       write additional property array
+        IF (index(project_sfx(ismpl),'_postcomp')>0) THEN
+          CALL write2_hdf5(nunits,nprop,propunit(1,1,ismpl),'props_full',filename)
+        END IF
+
 !     close FORTRAN interface
         CALL h5close_f(error)
 

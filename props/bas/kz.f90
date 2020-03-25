@@ -30,7 +30,7 @@
 !> kz returns the permeability in z-direction[m2] at node(i,j,k) from
 !> the input file.\n
       double precision function kz(i,j,k,ismpl)
-        use arrays, only: propunit, uindex, idx_kz
+        use arrays
 
         implicit none
 

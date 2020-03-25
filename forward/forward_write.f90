@@ -36,3 +36,20 @@
         CALL write_logs(i,ismpl)
         RETURN
       END
+
+!>    @brief wrapper routine for restart output
+!>    @param[in] restart_name restart file name
+!>    @param[in] simtime simulation time
+!>    @param[in] idummy index/iteration number
+!>    @param[in] ismpl local sample index
+      SUBROUTINE resforward_write(restart_name,simtime,idummy,ismpl)
+        IMPLICIT NONE
+        character (len=*) :: restart_name
+        DOUBLE PRECISION simtime
+        INTEGER idummy, ismpl
+!
+        CALL write_restartfw(restart_name,simtime,idummy,ismpl)
+!     against problems during writing
+        CALL write_restartfw('_'//restart_name,simtime,idummy,ismpl)
+        RETURN
+      END
