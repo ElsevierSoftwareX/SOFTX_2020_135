@@ -20,8 +20,10 @@
 ! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ! SOFTWARE.
 
-!>    @brief thread level information
+!>    @brief nested OpenMP, thread level information
 module mod_OMP_TOOLS
 !     number of threads for level 0(outer region) and 1(inner region)
       integer Tlevel_0, Tlevel_1
+!     nested OpenMP enabled?
+      logical nested_build
 end module mod_OMP_TOOLS

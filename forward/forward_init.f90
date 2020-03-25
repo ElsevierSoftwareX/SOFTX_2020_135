@@ -29,11 +29,18 @@
 !>
 !> - Call user and props initializing subroutines \n\n
 !>
+!> - doing additional stuff for the multi-sample computation:\n
+!>   - prepare monitor output files (headers)\n
+!>   - prepare main input/output vector variables\n\n
+!>
 !> - output memory information\n
       subroutine forward_init(ismpl)
 
-        use mod_genrl, only: is_init_flow_trafo_needed, memory
+        use arrays, only: main_input, main_output, mpara
+        use mod_genrl, only: is_init_flow_trafo_needed, memory, nsmpl, &
+            idx_master, cgen_opti
         use mod_linfos, only: linfos
+        use mod_data, only: ndata
 
         implicit none
 
@@ -43,6 +50,9 @@
         ! Local variable for array memory
         double precision :: memloc
 
+        integer :: i
+
+        double precision, external :: get_optip
 
         if (linfos(3)>=2) write(*,*) ' ... forward_init'
 
@@ -59,6 +69,19 @@
 
         ! PROPS model init
         call props_init(ismpl)
+!
+!       setup main input/output variables for "forward_compute"
+        ALLOCATE(main_input(max(mpara,1),nsmpl))
+        memory = memory +max(mpara,1)*nsmpl
+        ALLOCATE(main_output(max(ndata,1),nsmpl))
+        memory = memory +max(ndata,1)*nsmpl
+!       init master input - parameter vector
+        DO i = 1, mpara
+          main_input(i,idx_master) = get_optip(i,idx_master)
+        END DO
+!
+        ! init master copy, save state from file init (necessary for transient models, INVERSE and SIMUL/ENKF)
+        CALL old_save(cgen_opti,ismpl)
 
         ! Memory information output
         if (linfos(1)>=0) then

@@ -70,6 +70,19 @@
         ALLOCATE(conc_conv(ntrac,nsmpl))
         memory = memory + ntrac*nsmpl
 
+!       inversion
+        ALLOCATE(opti_props(nprop,nunits))
+        memory = memory + nunits*nprop
+        ALLOCATE(opti_bc(nbc,nunits))
+        memory = memory + nunits*nbc
+        ALLOCATE(a_propunit(nunits,nprop))
+        ALLOCATE(d_propunit(nunits,nprop))
+        ALLOCATE(e_propunit(nunits,nprop))
+        memory = memory + 3*nunits*nprop
+        CALL set_dval(nunits*nprop,0.D0,a_propunit)
+        CALL set_dval(nunits*nprop,0.D0,d_propunit)
+        CALL set_dval(nunits*nprop,0.D0,e_propunit)
+
         ALLOCATE(node_info(i0,j0,k0))
         memory = memory + i0*j0*k0
 !     additional global & private vectors for linear system solver
@@ -219,6 +232,11 @@
         allocate(delta_time(1))
         memory = memory + 1
 
+        ALLOCATE(opti_tp(3,ngsmax*mopti_tp*max(nbctp,1)))
+        memory = memory + 3*ngsmax*mopti_tp*max(nbctp,1)
+        ALLOCATE(a_bcperiod(ngsmax,2,max(nbctp,1)))
+        ALLOCATE(d_bcperiod(ngsmax,2,max(nbctp,1)))
+        ALLOCATE(e_bcperiod(ngsmax,2,max(nbctp,1)))
         ALLOCATE(simtime(nsmpl))
         memory = memory + nsmpl
 
@@ -278,10 +296,22 @@
 
 !     initialisation of this kind, is needfull for NUMA architectures !!!
 ! ----------- NUMA -------------
-        DO l2 = 1, nsmpl
-!         Tlevel_0 = 1 !!!
+        IF (nested_build) THEN
+!$OMP   parallel default(none) private(l2) shared(nsmpl,Tlevel_0,mfactor) &
+!$OMP    num_threads(Tlevel_0)
+!           Tlevel_0 = nsmpl !!!
+!         openmp-critical to avoid ScaleMP performance bug during first initialisation
+!$OMP     critical
+          l2 = omp_get_his_thread_num() + 1
           CALL numa_init(mfactor,l2)
-        END DO
+!$OMP     end critical
+!$OMP   end parallel
+        ELSE
+          DO l2 = 1, nsmpl
+!         Tlevel_0 = 1 !!!
+            CALL numa_init(mfactor,l2)
+          END DO
+        END IF
 ! ----------- NUMA -------------
 
 #ifdef BENCH
@@ -292,6 +322,11 @@
 #endif
 
 
+!     Dummy allocation
+!       main_input (allocated in forward_init)
+!       memory = memory + max(mpara,1)*nsmpl
+!       main_output (allocated in forward_init)
+!       memory = memory + max(ndata,1)*nsmpl
         ALLOCATE(sdata(1,nsmpl))
         memory = memory + nsmpl
 

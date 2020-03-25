@@ -432,6 +432,41 @@
         INTEGER first_conc, last_conc
         INTEGER nbc_data
 
+!     SM/simulate
+        DOUBLE PRECISION, ALLOCATABLE :: propunitold(:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: bcperiodold(:,:,:)
+
+!     -------
+!     inverse (AD) & simulate (SIMUL/ENKF)
+        INTEGER mpara
+
+!     -------
+!     inverse
+        INTEGER, ALLOCATABLE :: opti_props(:,:)
+        INTEGER, ALLOCATABLE :: opti_bc(:,:)
+        INTEGER, ALLOCATABLE :: opti_tp(:,:)
+!       1: alpha; 2: beta modificators
+        INTEGER mopti_tp
+        PARAMETER (mopti_tp=2)
+!
+!     apriori (inverse)
+        DOUBLE PRECISION, ALLOCATABLE :: a_propunit(:,:)
+
+!     error (apriori)
+        DOUBLE PRECISION, ALLOCATABLE :: d_propunit(:,:)
+
+!     error (aposteriori)
+        DOUBLE PRECISION, ALLOCATABLE :: e_propunit(:,:)
+
+!     main parameter input vector for forward simulation (see "forward_compute")
+        DOUBLE PRECISION, ALLOCATABLE :: main_input(:,:)
+!     main data output vector for forward simulation (see "forward_compute")
+        DOUBLE PRECISION, ALLOCATABLE :: main_output(:,:)
+!
+!     for jacobi computation (INVERSE) / ENKF /SIMUL
+!       parameter master copy
+        DOUBLE PRECISION, ALLOCATABLE :: main_input_master(:)
+
         ! Observed data
         ! -------------
 
@@ -678,6 +713,11 @@
         !> - number of time steps per period \n
         !> - step type (f.e. distributed linearly, logarithmically) \n
         double precision, allocatable, dimension (:) :: delta_time
+
+!     for inverse computation
+        DOUBLE PRECISION, ALLOCATABLE :: a_bcperiod(:,:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: d_bcperiod(:,:,:)
+        DOUBLE PRECISION, ALLOCATABLE :: e_bcperiod(:,:,:)
 
         !> @brief Simulation time
         !> @details

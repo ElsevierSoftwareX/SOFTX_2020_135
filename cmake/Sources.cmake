@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 #Module Files - need to be build prior to all other files
-file (GLOB SRC_MODULES forward/arrays.f90 forward/mod_*.f90 solve/mod_*.f90 hdf5/mod_*.f90)
+file (GLOB SRC_MODULES forward/arrays.f90 forward/mod_*.f90 solve/mod_*.f90 simul/mod_*.f90 hdf5/mod_*.f90) 
 file (GLOB SRC_MODULES_AD inverse/mod_*.f90 inverse/${ADTYPE}/g_arrays.f90 ${ADTYPE}/g_mod*.f* props/${PROPS}/${ADTYPE}/g_mod*.f*) 
 file (GLOB SRC_MODULES_SM simul/mod_*.f90 simul/enkf/m_*.f*)
 
@@ -48,7 +48,7 @@ if (use_rm)
 endif()
 
 #HDF FILES
-file(GLOB SRC_HDF hdf5/add_cube.f90 hdf5/open_hdf5.f90 hdf5/close_hdf5.f90 hdf5/closeopen_hdf5.f90 hdf5/test_hdf5.f90 hdf5/read_hdf5.f90 hdf5/read_hdf5_int.f90 hdf5/write_all_hdf5.f90 hdf5/add_line.f90  hdf5/write_parameter2_hdf5.f90 hdf5/add_plane.f90   hdf5/write_parameter_hdf5.f90  hdf5/read_outt_hdf5.f90 )
+file(GLOB SRC_HDF hdf5/add_cube.f90 hdf5/open_hdf5.f90 hdf5/close_hdf5.f90 hdf5/closeopen_hdf5.f90 hdf5/test_hdf5.f90 hdf5/read_hdf5.f90 hdf5/read_hdf5_int.f90 hdf5/create_hdf5.f90 hdf5/write_all_hdf5.f90 hdf5/add_line.f90   hdf5/write_hdf5.f90 hdf5/write_hdf5_int.f90 hdf5/write_parameter2_hdf5.f90 hdf5/add_plane.f90   hdf5/write_parameter_hdf5.f90  hdf5/read_outt_hdf5.f90 )
 #HDF FILES FOR INVERSE
 file(GLOB SRC_HDF_AD inverse/mod_inverse.f90 hdf5/write_joutt_hdf5.f90  hdf5/read_joutt_hdf5.f90  hdf5/write_inv_hdf5.f90 )
 
@@ -78,7 +78,7 @@ file(GLOB SRC_PROPS_AD props/${PROPS}/${ADTYPE}/${phys_base}/*.f*)
 
 
 # Include Directories
-include_directories("." "forward" "solve" "${PROJECT_BINARY_DIR}/generated/")
+include_directories("." "forward" "solve" "simul" "${PROJECT_BINARY_DIR}/generated/" "simul/gs")
 
 
 #Sources for Forward Build

@@ -24,6 +24,7 @@
 module mod_genrlc
       character (len=80) :: title
       character (len=256) :: project
+      character (len=256) :: restart_name
 
       !> @brief Filename of status log output file.
       !> @details
@@ -33,6 +34,10 @@ module mod_genrlc
 !     defines the PROPS and USER choice
       character (len=80) :: def_props, def_user
 !
-!     external file control for: data
+!     binary can be one of: 'forward', 'simul' or 'inverse'
+      character (len=7) :: def_binary
+!
+!     external file control for: simul, enkf, inverse, data
+      character (len=256) :: filename_simul, filename_enkf, filename_inverse
       character (len=256) :: filename_data
 end module mod_genrlc

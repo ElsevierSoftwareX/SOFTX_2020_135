@@ -36,10 +36,11 @@
         DOUBLE PRECISION, ALLOCATABLE :: tmp_new(:,:)
         INTEGER ijk0, id, ii, i1, i2, i3, i4
         character (len=80) :: sfx_old
+        character (len=8) :: snumber
         INTRINSIC trim
 
 
-        IF (write_disable) RETURN
+        IF (write_disable .AND. .NOT. write_eoutt) RETURN
 
 !     allowed numerical difference
         numdiff = 1.D-14*tunit
@@ -83,9 +84,18 @@
             END DO
           END DO
 
+          !Johannes: Deleted explicit time from vtk-file name
+          ! to make easy read-in to paraview possible
           sfx_old = project_sfx(ismpl)
-          project_sfx(ismpl) = trim(sfx_old) // '_time' // &
-              '_out'
+          IF (nsmpl>1 .AND. write_eoutt) THEN
+            WRITE(snumber,'(1I6)') ismpl
+            CALL chln(snumber,i3,i4)
+            project_sfx(ismpl) = trim(sfx_old) // '_time' // &
+                 '_smpl' // snumber(i3:i4) // '_out'
+          ELSE
+            project_sfx(ismpl) = trim(sfx_old) // '_time' // &
+                 '_out'
+          ENDIF
           CALL forward_write(id,ismpl)
           project_sfx(ismpl) = sfx_old
 

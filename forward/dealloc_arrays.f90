@@ -53,6 +53,16 @@
         DEALLOCATE(conc_conv)
         memory = memory - ntrac*nsmpl
 
+!       inversion
+        DEALLOCATE(opti_props)
+        memory = memory - nunits*nprop
+        DEALLOCATE(opti_bc)
+        memory = memory - nunits*nbc
+        DEALLOCATE(a_propunit)
+        DEALLOCATE(d_propunit)
+        DEALLOCATE(e_propunit)
+        memory = memory - 3*nunits*nprop
+
         DEALLOCATE(node_info)
         memory = memory - i0*j0*k0
 !     additional global & private vectors for linear system solver
@@ -190,7 +200,12 @@
         memory = memory - nsmpl
         deallocate(delta_time)
         memory = memory - max(ntimestep,1)
+        DEALLOCATE(opti_tp)
+        memory = memory - 3*ngsmax*mopti_tp*max(nbctp,1)
 
+        DEALLOCATE(a_bcperiod)
+        DEALLOCATE(d_bcperiod)
+        DEALLOCATE(e_bcperiod)
         DEALLOCATE(simtime)
         memory = memory - nsmpl
 
@@ -239,6 +254,12 @@
         DEALLOCATE(omp_iglobal)
         memory = memory - 12*tlevel_1*nsmpl
 
+
+!       allocated in "forward_init"
+        DEALLOCATE(main_input)
+        memory = memory - max(mpara,1)*nsmpl
+        DEALLOCATE(main_output)
+        memory = memory - max(ndata,1)*nsmpl
 
         write(*,*) "Deallocated Memory, remaining ",memory*8/1024/1024, " MB"
         RETURN

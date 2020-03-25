@@ -21,23 +21,24 @@
 ! SOFTWARE.
 
 !>    @brief wrapper for the forward simulation call
+!>    @param[in] iseed 0: FW simulation, 1 .. <mpara>: AD seeding index
 !>    @param[in] iter time iteration counter
 !>    @param[in] ismpl local sample index
 !>    @details
-!> Seperates the equation system solving from the specific nonlinear
-!> solver (Picard based)\n
-      subroutine forward_wrapper(iter,ismpl)
-
-        implicit none
-
+!> seperates the equation system solving from the\n
+!> specific nonlinear solver (Picard based)\n
+      SUBROUTINE forward_wrapper(iter,iseed,ismpl)
+        use arrays
+        use mod_genrl
+        use mod_genrlc
+        use mod_time
+        IMPLICIT NONE
         integer :: ismpl
 
-        integer, intent (in) :: iter
+        INTEGER iter, iseed
 
 ! ######### Forward Iteration ######
-        call forward_picard(iter,ismpl)
+        CALL forward_picard(iter,ismpl)
 ! ##################################
-
-        return
-
-      end subroutine forward_wrapper
+        RETURN
+      END

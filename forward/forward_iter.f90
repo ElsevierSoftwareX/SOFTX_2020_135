@@ -21,8 +21,10 @@
 ! SOFTWARE.
 
 !> @brief time discretisation loop
+!> @param[in] iter_out inverse iteration, SM realisation
 !> @param[in] simtime_run start time of the simulation
 !> @param[in] simtime_end finish time of the simulation
+!> @param[in] iseed 0: FW simulation, 1 .. <mpara>: AD seeding index
 !> @param[in] ismpl local sample index
 !> @details
 !> In-a-Nutshell description of this subroutine: \n
@@ -35,7 +37,7 @@
 !>   - after computations: save simulated data, update simtime,
 !>     output, check divergence for variable step size \n
 !> - Postprocessing: standard output
-      subroutine forward_iter(simtime_run,simtime_end,ismpl)
+      subroutine forward_iter(simtime_run,simtime_end,iter_out,iseed,ismpl)
 
         use arrays, only: flag_1st_timestep, simtime, tr_switch, &
             flag_delt
@@ -50,6 +52,9 @@
 
         ! local sample index
         integer :: ismpl
+
+        ! iter_out: inverse iteration, SM realisation
+        INTEGER iter_out, iseed
 
         ! Time step index
         integer :: itimestep
@@ -88,17 +93,17 @@
         if (transient .and. runmode == 2) then
 
           tr_switch(ismpl) = .false.
-          if (linfos(2) >= 0) write(*,'(1A)') '  [I] : extra steady state initialisation'
+          if (iseed == 0 .and. linfos(2) >= 0) write(*,'(1A)') '  [I] : extra steady state initialisation'
 
-          call forward_wrapper(itimestep,ismpl)
+          call forward_wrapper(itimestep,iseed,ismpl)
 
-          if (linfos(2) >= 0) write(*,'(1A)') '  [I] : normal transient process'
+          if (iseed == 0 .and. linfos(2) >= 0) write(*,'(1A)') '  [I] : normal transient process'
           tr_switch(ismpl) = .true.
 
         end if
 
         ! Write to status_log
-        if (transient .and. (.not. write_iter_disable)) then
+        if (transient .and. iseed == 0 .and. (.not. write_iter_disable)) then
 
           open(76, file=status_log, status='unknown', position='append')
           write(76, fmt='(I8,1e14.6,1e14.6)') itimestep, deltt, simtime(ismpl)/tunit
@@ -135,7 +140,7 @@
         end if
 
 ! ######### Forward Iteration ######
-        call forward_wrapper(itimestep,ismpl)
+        call forward_wrapper(itimestep,iseed,ismpl)
 ! ##################################
 
         ! save and collect the computed values for:
@@ -158,7 +163,7 @@
           end if
 
           ! Write to status_log
-          if ( .not. write_iter_disable) then
+          if ( .not. write_iter_disable .and. iseed == 0) then
 
             ! Status log info to standard out
             if (linfos(1)>=1) then
@@ -195,12 +200,12 @@
         ! --------------
 
         ! Standard output: steady state
-        if (linfos(1) >= 1 .and. .not. transient) then
+        if (iter_out > 0 .and. linfos(1) >= 1 .and. .not. transient .and. iseed == 0) then
           write(*,'(29X,1A)') ' ===> leaving nonlinear iteration'
         end if
 
         ! Standard output: transient
-        if (linfos(1) >= 0 .and. transient) then
+        if (linfos(1) >= 0 .and. transient .and. iseed == 0) then
           write(*,'(1A,I8,1A,1e14.6)') '  [I] : final time step = ', &
               itimestep,', simulation time', simtime(ismpl)/tunit
         end if
