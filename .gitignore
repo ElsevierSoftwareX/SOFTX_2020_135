@@ -1,0 +1,6 @@
+Makefile.dep
+Makefile.flags
+version.inc
+test_integer.exe
+*.mod
+*.o
