@@ -20,6 +20,10 @@ equations can be solved explicitly, implicitly or semi-implicitly.
 [More detailed information on the
 equations](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/equations)
 
+<img src="https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/uploads/ae71f4129398132f9f66ab471a4ec519/2dFG_forced_TEMP.png"  width="750">
+
+*Temperature distribution and groundwater flow field in a 2D subsurface model simulated with SHEMAT-Suite.*
+
 
 ## Installation ##
 
