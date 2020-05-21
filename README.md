@@ -17,6 +17,8 @@ SHEMAT-Suite uses finite-difference discretization on a Cartesian grid
 with x, y, z coordinates and block centered nodes.  The system of
 equations can be solved explicitly, implicitly or semi-implicitly.
 
+A code demonstartion is available as Code Ocean Capsule: https://codeocean.com/capsule/4639982/tree
+
 [More detailed information on the
 equations](https://git.rwth-aachen.de/SHEMAT-Suite/SHEMAT-Suite-open/-/wikis/equations)
 
